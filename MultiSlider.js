@@ -193,6 +193,22 @@ export default class MultiSlider extends React.Component {
         this.optionsArray,
         this.props.sliderLength,
       );
+      if (this.state.valueTwo === value) {
+        const customConfined =
+          unconfined < bottom ? bottom : unconfined > this.props.sliderLength ? this.props.sliderLength : unconfined;
+        const newValue = positionToValue(customConfined, this.optionsArray, this.props.sliderLength);
+        const positionOne = valueToPosition(newValue, this.optionsArray, this.props.sliderLength);
+
+        this.setState({
+          positionOne: positionOne,
+          positionTwo: positionOne,
+          valueOne: newValue,
+          valueTwo: newValue,
+          // pastOne: positionOne,
+          pastTwo: positionOne,
+        });
+        this.props.onValuesChange([newValue, newValue]);
+      } else {
       var snapped = valueToPosition(
         value,
         this.optionsArray,
@@ -216,6 +232,7 @@ export default class MultiSlider extends React.Component {
           },
         );
       }
+    }
     }
   };
 
@@ -253,6 +270,21 @@ export default class MultiSlider extends React.Component {
         this.optionsArray,
         this.props.sliderLength,
       );
+      if (this.state.valueOne === value) {
+        const customConfined =
+          unconfined < 0 ? 0 : unconfined > this.props.sliderLength ? this.props.sliderLength : unconfined;
+        const newValue = positionToValue(customConfined, this.optionsArray, this.props.sliderLength);
+        const positionTwo = valueToPosition(newValue, this.optionsArray, this.props.sliderLength);
+
+        this.setState({
+          positionOne: positionTwo,
+          positionTwo: positionTwo,
+          valueOne: newValue,
+          valueTwo: newValue,
+          pastOne: positionTwo,
+        });
+        this.props.onValuesChange([newValue, newValue]);
+      } else {
       var snapped = valueToPosition(
         value,
         this.optionsArray,
@@ -276,6 +308,7 @@ export default class MultiSlider extends React.Component {
           },
         );
       }
+    }
     }
   };
 
@@ -377,7 +410,7 @@ export default class MultiSlider extends React.Component {
 
     return (
       <View style={containerStyle}>
-        <View style={[styles.fullTrack, { width: sliderLength }]}>
+        <View style={[styles.fullTrack, { width: sliderLength, marginLeft: -24 }]}>
           <View
             style={[
               styles.track,
@@ -391,7 +424,7 @@ export default class MultiSlider extends React.Component {
               styles.track,
               this.props.trackStyle,
               trackTwoStyle,
-              { width: trackTwoLength },
+              { width: trackTwoLength + 24 },
             ]}
           />
           {twoMarkers && (
@@ -411,9 +444,10 @@ export default class MultiSlider extends React.Component {
               this.props.markerContainerStyle,
               positionOne > sliderLength / 2 && styles.topMarkerContainer,
             ]}
+            pointerEvents="box-none"
           >
             <View
-              style={[styles.touch, touchStyle]}
+              style={[styles.touch, touchStyle, { marginRight: 24 }]}
               ref={component => (this._markerOne = component)}
               {...this._panResponderOne.panHandlers}
             >
@@ -440,17 +474,17 @@ export default class MultiSlider extends React.Component {
               )}
             </View>
           </View>
-          {twoMarkers &&
-            positionOne !== this.props.sliderLength && (
+          {twoMarkers && (
               <View
                 style={[
                   styles.markerContainer,
                   markerContainerTwo,
                   this.props.markerContainerStyle,
                 ]}
+                pointerEvents="box-none"
               >
                 <View
-                  style={[styles.touch, touchStyle]}
+                  style={[styles.touch, touchStyle, { marginLeft: 24 }]}
                   ref={component => (this._markerTwo = component)}
                   {...this._panResponderTwo.panHandlers}
                 >
